@@ -39,4 +39,4 @@ const connectingDB = async() => {
 
 
 
-export {  connectingDB };
+export { db,  connectingDB };
