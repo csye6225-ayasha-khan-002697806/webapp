@@ -1,0 +1,53 @@
+import User from "../model/user.js";
+import bcrypt from 'bcrypt';
+
+const checkAuthenticatedUser = async (req, res, next) => {
+  if (!req.get('Authorization')) {
+    const err = new Error('Not Authenticated!');
+    res.status(401).set('WWW-Authenticate', 'Basic');
+    return next(err);
+  }
+
+  try {
+    // base64 encoded - email:password
+    const authHeader = req.get('Authorization');
+    const encodedCredentials = authHeader.split(' ')[1]; // Extract base64 encoded part
+    const decodedCredentials = Buffer.from(encodedCredentials, 'base64').toString().split(':');
+  
+    console.log(`basic token: ${encodedCredentials}`);
+    const email = decodedCredentials[0];  // Email is used as the username
+    const password = decodedCredentials[1];
+
+    console.log(`email in Auth`);
+    const user = await User.findOne({
+      where: { email },
+    });
+
+    if (!user) {
+      return res.status(401).send({
+        message: "Authentication failed! Wrong Username or password!",
+      });
+    }
+
+    const dbPassword = user.dataValues.password;
+    const isPasswordValid = await bcrypt.compare(password, dbPassword);
+
+    if (isPasswordValid) {
+      console.log("Authentication successful");
+      req.username = email; // Store email in the request object for further use
+      next(); 
+    } else {
+      console.log("Authentication failed");
+      return res.status(401).send({
+        message: "Authentication failed! Wrong username or password!",
+      });
+    }
+  } catch (error) {
+    console.error("Error during authentication:", error);
+    res.status(500).send({
+      message: "Internal server error",
+    });
+  }
+};
+
+export default checkAuthenticatedUser;
