@@ -38,6 +38,14 @@ const updateUser = async (req, res) => {
         if(email !== req.body.email){
             return res.status(400).json();
         }
+
+        const requiredFields = ['first_name', 'last_name', 'email', 'password'];
+
+        for (const field of requiredFields) {
+            if (!req.body[field]) {
+                return res.status(400).json({ message: `${field} is required` });
+            }
+        }
     
         if (req.body.hasOwnProperty('uuid') || req.body.hasOwnProperty('account_created') || req.body.hasOwnProperty('account_updated') || 
         req.body.first_name === '' || req.body.last_name === '' || 
