@@ -18,6 +18,12 @@ Assignment 01: Health Check REST API
    1. npm start
 
 
+Assignment 02 : User create and update
+
+1. npm install basic-auth bcryptjs chai supertest
+2. npm install --save-dev jest mocha
+
+
 ## Technologies used
 
 ## Prerequisites
