@@ -52,10 +52,10 @@ jobs:
         # Step 6: Run the tests
       - name: Run tests
         env:
-          HOST: ${{ secrets.DB_HOST }}
+          HOST: ${{ secrets.HOST }}
           DB_USERNAME: ${{ secrets.DB_USERNAME }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DATABASE: ${{ secrets.DATABASE }}
           PORT: ${{ secrets.PORT }}
-          DB_DIALECT: ${{ secrets.postgres }}
+          DB_DIALECT: ${{ secrets.DB_DIALECT }}
         run: npm test
