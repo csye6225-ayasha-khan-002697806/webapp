@@ -91,6 +91,60 @@ npm start
 2. https://sequelize.org/docs/v6/other-topics/legacy/
 3. https://www.youtube.com/watch?v=bOHysWYMZM0&list=PLbZ6yn8dyClCUGeqqoYZgSbhioFsg8w_f&index=1
 
+## steps to deploy and run your web app in VM on digital ocean
+
+1. Scp env and project file
+
+scp -i ./.ssh/digitalocean /Users/ayashakhan/Documents/env.txt root@161.35.98.43:/root/assignment02
+scp -i ./.ssh/digitalocean /Users/ayashakhan/Documents/Ayasha_Khan_002697806_02.zip root@161.35.98.43:/root/assignment02
+
+
+2. On remote server install unzip if not present
+sudo apt update
+sudo apt install unzip
+
+3. Unzip the file in remote server
+unzip Ayasha_Khan_002697806_02.zip 
+
+* apt install -y nodejs
+* Apt install npm
+
+4. Check node version
+node -v
+npm -v
+
+5. Got to your working folder
+Cd /root/assignment02/Ayasha_Khan_002697806_02/webapp
+
+6. Install postgres
+sudo apt install postgresql postgresql-contrib
+
+
+7. Connect to Postgres, create user and database
+
+sudo -i -u postgres
+psql
+CREATE USER myapp_user WITH PASSWORD 'your_password';
+GRANT ALL PRIVILEGES ON DATABASE csye6225_ayasha_khan_002697806 TO myapp_user;
+ ALTER DATABASE csye6225_ayasha_khan_002697806 OWNER TO ayashakhan;
+
+
+8. Copy paste your .env  in working directory
+
+
+9. Now initiating node project
+    1. npm install
+    2. npm install express sequelize pg pg-hstore
+    3. npm install dotenv
+    4. npm install basic-auth bcryptjs chai supertest
+    5. npm install --save-dev jest mocha
+    6. npm install bcrypt
+    7. 
+
+    10. To connect to database and see tables
+* \c csye6225_ayasha_khan_002697806; — to switch to user 
+* \d— relations in this user
+
 
 ## Author
 
