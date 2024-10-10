@@ -139,9 +139,9 @@ GRANT ALL PRIVILEGES ON DATABASE csye6225_ayasha_khan_002697806 TO myapp_user;
     4. npm install basic-auth bcryptjs chai supertest
     5. npm install --save-dev jest mocha
     6. npm install bcrypt
-    7. 
+    
 
-    10. To connect to database and see tables
+    7.  To connect to database and see tables
 * \c csye6225_ayasha_khan_002697806; — to switch to user 
 * \d— relations in this user
 
