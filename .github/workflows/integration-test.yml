@@ -24,7 +24,11 @@ jobs:
  
       # Step 3: Install dependencies
       - name: Install dependencies
-        run: npm install
+        run: | 
+          npm install
+          npm i
+          npm bcrypt
+
  
       # Step 4: Install PostgreSQL
       - name: Install PostgreSQL
