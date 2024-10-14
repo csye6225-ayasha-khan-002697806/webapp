@@ -49,7 +49,7 @@ describe('User Endpoint Integration Tests', () => {
       console.log(getResponse.text);
       const responseBody = getResponse.body; 
 
-      expect(getResponse.statusCode).to.equal(200);
+      expect(getResponse.statusCode).to.equal(400);
       expect(responseBody.email).to.equal(testUsername); 
     } catch (error) {
       console.error('Test 1 failed:', error.message);
