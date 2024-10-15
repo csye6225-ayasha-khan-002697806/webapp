@@ -1,0 +1,44 @@
+name: Packer CI
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  packer-check:
+    name: Packer Template Check
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Step 2: Build application artifact
+      - name: Build application artifact
+        run: zip -r webapp.zip ./*
+
+      # Step 3: Install Packer
+      - name: Setup Packer
+        uses: hashicorp/setup-packer@v3
+        with:
+          version: latest
+
+      # Step 4: Initialize Packer
+      - name: Initialize Packer
+        run: packer init aws.pkr.hcl
+
+      # Step 5: Validate and format Packer template
+      - name: Validate Packer Template
+        run: |
+          packer validate aws.pkr.hcl
+          packer fmt aws.pkr.hcl
+
+      # Step 6: Check for proper formatting
+      - name: Format Packer Template
+        run: |
+          if ! packer fmt -check -diff aws.pkr.hcl; then
+            echo "Packer template is not properly formatted. Please run 'packer fmt' to format."
+            exit 1
+          fi
