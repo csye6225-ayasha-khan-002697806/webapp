@@ -45,3 +45,9 @@ jobs:
       - name: Create Zip File of Webapp Repo
         run: |
           zip -r webapp.zip .
+
+      # # Step 4: Packer build to create machine image
+      # - name: Init and Build Custom Image
+      #   run: |
+      #     packer init application-custom-image.pkr.hcl
+      #     packer build application-custom-image.pkr.hcl
