@@ -33,27 +33,23 @@ sudo -u csye6225 bash <<'EOF'
 # Navigate to the application directory
 cd /opt/csye6225 || exit
 
-# Create .env file and write environment variables into it
-env_values=$(cat <<END
+cat <<END > .env
 PORT=$PORT
 DATABASE=$DATABASE
 DB_USERNAME=$DB_USERNAME
 DB_PASSWORD=$DB_PASSWORD
 HOST=$HOST
 DB_DIALECT=$DB_DIALECT
+END
 
-# Echo environment variables for debugging in USer setup
+# Echo environment variables for debugging in User setup
 echo "DATABASE is: $DATABASE"
 echo "DB_USERNAME is: $DB_USERNAME"
 echo "DB_PASSWORD is: $DB_PASSWORD"
 echo "PORT is: $PORT"
 echo "HOST is: $HOST"
 echo "DB_DIALECT is: $DB_DIALECT"
-END
-)
 
-# Write environment variables to .env file
-echo "$env_values" > .env
 
 # Change ownership of the .env file to csye6225
 sudo chown csye6225:csye6225 .env
