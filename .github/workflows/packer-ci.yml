@@ -16,6 +16,10 @@ jobs:
       DATABASE: ${{ secrets.DATABASE }}
       PORT: ${{ secrets.PORT }}
       DB_DIALECT: ${{ secrets.DB_DIALECT }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      SOURCE_AMI: ${{ secrets.SOURCE_AMI }}
+      SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
+      SUBNET_ID: ${{ secrets.SUBNET_ID }}
 
     steps:
       # Step 1: Checkout the repository
