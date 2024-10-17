@@ -48,24 +48,36 @@ jobs:
         run: |
           zip -r webapp.zip .
 
-      # Step 4: Packer build to create machine image
+      # Step 5: Packer build to create machine image
       - name: Init and Build Custom Image
         run: |
           packer init application-custom-image.pkr.hcl
           packer build application-custom-image.pkr.hcl
 
-      # Step 7: Share the AMI with DEMO Account
-      # - name: Share AMI with DEMO Account
-      #   run: |
-      #     AMI_ID=$(aws ec2 describe-images \
-      #         --filters "Name=name,Values=${{ env.AMI_NAME }}" \
-      #         --query 'Images[*].ImageId' --output text)
+      # Step 6: Share the AMI with DEMO Account and Save AMI_ID as Artifact
+      - name: Share the AMI and Save AMI_ID
+        id: share_ami
+        run: |
+          AMI_ID=$(aws ec2 describe-images \
+              --owners self \
+              --filters "Name=state,Values=available" \
+              --query "Images | sort_by(@, &CreationDate)[-1].ImageId" \
+              --output text)
 
-      #     if [ -n "$AMI_ID" ]; then
-      #       echo "Sharing AMI $AMI_ID with DEMO account..."
-      #       aws ec2 modify-image-attribute --image-id "$AMI_ID" \
-      #         --launch-permission "{\"Add\": [{\"UserId\": \"${{ env.DEMO_ACCOUNT_ID }}\"}]}"
-      #     else
-      #       echo "AMI not found, exiting."
-      #       exit 1
-      #     fi
+          # if [ -n "$AMI_ID" ]; then
+          #   echo "Sharing AMI $AMI_ID with DEMO account..."
+          #   aws ec2 modify-image-attribute --image-id "$AMI_ID" \
+          #     --launch-permission "{\"Add\": [{\"UserId\": \"${{ env.DEMO_ACCOUNT_ID }}\"}]}"
+          #   echo "::set-output name=ami_id::$AMI_ID"
+          #   echo "$AMI_ID" > ami_id.txt
+          # else
+          #   echo "AMI not found, exiting."
+          #   exit 1
+          # fi
+
+      # Step 7: Upload AMI_ID as an Artifact
+      - name: Upload AMI_ID Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ami_id
+          path: ami_id.txt
