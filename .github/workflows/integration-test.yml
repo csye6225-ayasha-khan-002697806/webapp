@@ -3,6 +3,10 @@ name: Run Tests on Pull Request
 # Run this workflow on pull requests to main branch
 on:
   pull_request:
+    types:
+      - opened
+      - synchronize
+      - closed
     branches:
       - "main"
  

@@ -2,6 +2,9 @@ name: Packer CI
 
 on:
   pull_request:
+    types:
+      - opened
+      - synchronize
     branches:
       - main
 
