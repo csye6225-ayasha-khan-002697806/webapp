@@ -1,6 +1,9 @@
 #!/bin/bash
 
-# Commands executed as root before switching to csye6225 user
+# Set the DEBIAN_FRONTEND environment variable to noninteractive
+export DEBIAN_FRONTEND=noninteractive 
+export CHECKPOINT_DISABLE=1
+
 
 # Update system packages and install unzip and zip
 sudo apt update -y
