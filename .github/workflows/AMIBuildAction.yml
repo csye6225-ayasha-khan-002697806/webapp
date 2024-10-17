@@ -22,6 +22,8 @@ jobs:
       SOURCE_AMI: ${{ secrets.SOURCE_AMI }}
       SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
       SUBNET_ID: ${{ secrets.SUBNET_ID }}
+      DEV_ACCOUNT_ID: ${{ secrets.DEV_ACCOUNT_ID }}        # DEV AWS Account ID
+      DEMO_ACCOUNT_ID: ${{ secrets.DEMO_ACCOUNT_ID }}      # DEMO AWS Account ID
 
     steps:
       - name: Checkout Repository
@@ -46,8 +48,8 @@ jobs:
         run: |
           zip -r webapp.zip .
 
-      # # Step 4: Packer build to create machine image
-      # - name: Init and Build Custom Image
-      #   run: |
-      #     packer init application-custom-image.pkr.hcl
+      # Step 4: Packer build to create machine image
+      - name: Init and Build Custom Image
+        run: |
+          packer init application-custom-image.pkr.hcl
       #     packer build application-custom-image.pkr.hcl
