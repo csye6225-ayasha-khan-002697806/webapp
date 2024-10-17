@@ -44,6 +44,7 @@ jobs:
           sudo -u postgres psql -c "CREATE DATABASE ${{ secrets.DATABASE }};"
           sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE ${{ secrets.DATABASE }} TO ${{ secrets.DB_USERNAME }};"
           sudo -u postgres psql -c "ALTER DATABASE ${{ secrets.DATABASE }} OWNER TO ${{ secrets.DB_USERNAME }};"
+          sudo -u postgres psql -c "TRUNCATE TABLE table_name CASCADE;" # Truncate specific tables
         
         
       # Step 6: Run the tests
