@@ -40,22 +40,26 @@ variable "db_dialect" {
 
 variable "aws_region" {
   type    = string
-  default = "us-east-1"
+  // default = "us-east-1"
+  default = env("AWS_REGION")
 }
 
 variable "source_ami" {
   type    = string
-  default = "ami-0866a3c8686eaeeba" # Ubuntu 24.04 LTS us-east-1
+  // default = "ami-0866a3c8686eaeeba" # Ubuntu 24.04 LTS us-east-1
+  default = env("SOURCE_AMI")
 }
 
 variable "ssh_username" {
   type    = string
-  default = "ubuntu"
+  // default = "ubuntu"
+  default = env("SSH_USERNAME")
 }
 
 variable "subnet_id" {
   type    = string
-  default = "subnet-08b7aaccb1c0bf34b"
+  // default = "subnet-08b7aaccb1c0bf34b"
+  default = env("SUBNET_ID")
 }
 
 source "amazon-ebs" "my-ami" {
@@ -121,7 +125,7 @@ build {
       "DB_PASSWORD=${var.db_password}",
       "PORT= ${var.port}",
       "HOST=${var.host}",
-    "DB_DIALECT=${var.db_dialect}"]
+      "DB_DIALECT=${var.db_dialect}"]
 
     scripts = [
       "./userAndGroup.sh",
