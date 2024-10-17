@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Set the DEBIAN_FRONTEND environment variable to noninteractive
+export DEBIAN_FRONTEND=noninteractive 
+export CHECKPOINT_DISABLE=1
+
 # Create PostgreSQL user and database
 sudo -u postgres psql -c "CREATE USER ${DB_USERNAME} WITH PASSWORD '${DB_PASSWORD}';"
 sudo -u postgres psql -c "CREATE DATABASE ${DATABASE};"
