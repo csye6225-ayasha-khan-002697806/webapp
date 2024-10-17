@@ -5,7 +5,9 @@ import express from 'express';
 import { Buffer } from 'buffer';
 import { getUser, updateUser, createUser } from '../controller/user-controller.js'; // Adjust the path as necessary
 import { captureRejectionSymbol } from 'events';
-import checkAuthenticatedUser from '../middleware/user-auth-service.js'
+import checkAuthenticatedUser from '../middleware/user-auth-service.js';
+import {  connectingDB } from '../config/database.js';
+import User from '../model/user.js';
 
 dotenv.config();
 const app = express();
@@ -23,6 +25,15 @@ function encodeBasicAuth(username, password) {
 }
 
 describe('User Endpoint Integration Tests', () => {
+
+  before(async () => {
+    await connectingDB();
+  });
+
+  after(async () => {
+    await User.destroy({ where: {} });
+  });
+
   const testUsername = 'ann2.doe@example.com';
   const testPassword = 'skdjfhskdfjhg';
   const newTestPassword = 'skdjfhskdfjhg';
