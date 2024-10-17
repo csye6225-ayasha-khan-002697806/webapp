@@ -11,7 +11,9 @@ app.use('/v1/user', userRoute);
 app.all('*',(req, res) =>{
     res.status(404).send();
 });
-  
+
+
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
