@@ -64,16 +64,16 @@ jobs:
               --query "Images | sort_by(@, &CreationDate)[-1].ImageId" \
               --output text)
 
-          # if [ -n "$AMI_ID" ]; then
-          #   echo "Sharing AMI $AMI_ID with DEMO account..."
+          if [ -n "$AMI_ID" ]; then
+            echo "Sharing AMI $AMI_ID with DEMO account..."
           #   aws ec2 modify-image-attribute --image-id "$AMI_ID" \
           #     --launch-permission "{\"Add\": [{\"UserId\": \"${{ env.DEMO_ACCOUNT_ID }}\"}]}"
-          #   echo "::set-output name=ami_id::$AMI_ID"
-          #   echo "$AMI_ID" > ami_id.txt
-          # else
-          #   echo "AMI not found, exiting."
-          #   exit 1
-          # fi
+            echo "::set-output name=ami_id::$AMI_ID"
+            echo "$AMI_ID" > ami_id.txt
+          else
+            echo "AMI not found, exiting."
+            exit 1
+          fi
 
       # Step 7: Upload AMI_ID as an Artifact
       - name: Upload AMI_ID Artifact
