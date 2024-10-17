@@ -23,7 +23,7 @@ function encodeBasicAuth(username, password) {
 }
 
 describe('User Endpoint Integration Tests', () => {
-  const testUsername = 'ann1.doe@example.com';
+  const testUsername = 'ann2.doe@example.com';
   const testPassword = 'skdjfhskdfjhg';
   const newTestPassword = 'skdjfhskdfjhg';
 
@@ -64,7 +64,7 @@ describe('User Endpoint Integration Tests', () => {
         first_name: 'Jannie',
         last_name: 'Doey',
         password: newTestPassword,
-        email:'ann1.doe@example.com'
+        email:'ann2.doe@example.com'
       };
 
       const updateResponse = await request.put('/v1/user/self')
@@ -114,7 +114,7 @@ describe('User Endpoint Integration Tests', () => {
         first_name:'',
         last_name:'',
         password: newTestPassword,
-        email: 'ann1.doe@example.com'
+        email: 'ann2.doe@example.com'
       };
 
       const updateResponse = await request.put('/v1/user/self')
