@@ -132,7 +132,7 @@ build {
     environment_vars = ["DATABASE=${var.database}",
       "DB_USERNAME=${var.db_username}",
       "DB_PASSWORD=${var.db_password}",
-      "PORT= ${var.port}",
+      "PORT=${var.port}",
       "HOST=${var.host}",
     "DB_DIALECT=${var.db_dialect}"]
 
