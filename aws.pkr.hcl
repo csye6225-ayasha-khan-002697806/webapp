@@ -15,7 +15,7 @@ variable "aws_region" {
 variable "source_ami" {
   type    = string
   default = "ami-0866a3c8686eaeeba" # Ubuntu 24.04 LTS us-east-1
-}
+
 
 variable "ssh_username" {
   type    = string
