@@ -2,9 +2,8 @@ packer {
   required_plugins {
     amazon = {
       version = ">= 1.0.0, < 2.0.0"
-      source  = "github.com/hashicorp/amazon"
-    }
-  }
+      source  = "github.com/hashicorp/amazon"}
+}
 }
 
 variable "aws_region" {
@@ -13,8 +12,8 @@ variable "aws_region" {
 }
 
 variable "source_ami" {
-  type    = string
-  default = "ami-0866a3c8686eaeeba" # Ubuntu 24.04 LTS us-east-1
+type    = string
+default = "ami-0866a3c8686eaeeba" # Ubuntu 24.04 LTS us-east-1
 }
 
 variable "ssh_username" {
