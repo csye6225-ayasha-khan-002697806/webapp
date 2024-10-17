@@ -27,7 +27,7 @@ jobs:
         run: | 
           npm install
           npm i
-          npm install bcrypt
+          # npm install bcrypt
 
  
       # Step 4: Install PostgreSQL

@@ -1,5 +1,5 @@
 [Unit]
-Description=CSYE 6225 Node.js App
+Description=CSYE 6225 Cloud Node.js App
 After=network.target
 
 [Service]
@@ -10,10 +10,9 @@ WorkingDirectory=/opt/csye6225
 ExecStart=/usr/bin/node /opt/csye6225/app.js
 Restart=always
 RestartSec=3
-EnvironmentFile=/opt/csye6225/.env
 StandardOutput=journal
 StandardError=journal
-SyslogIdentifier=nodeApp
+SyslogIdentifier=csye6225
 
 [Install]
 WantedBy=multi-user.target

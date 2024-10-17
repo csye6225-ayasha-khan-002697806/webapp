@@ -7,6 +7,37 @@ packer {
   }
 }
 
+variable "database" {
+  type    = string
+  default = env("DATABASE")
+}
+
+variable "db_username" {
+  type    = string
+  default = env("DB_USERNAME")
+}
+
+variable "db_password" {
+  type    = string
+  default = env("DB_PASSWORD")
+}
+
+variable "port" {
+  type    = number
+  default = env("PORT")
+}
+
+variable "host" {
+  type    = string
+  default = env("HOST")
+}
+
+variable "db_dialect" {
+  type    = string
+  default = env("DB_DIALECT")
+}
+
+
 variable "aws_region" {
   type    = string
   default = "us-east-1"
@@ -29,7 +60,7 @@ variable "subnet_id" {
 
 source "amazon-ebs" "my-ami" {
   region          = "${var.aws_region}"
-  ami_name        = "csye6225_f24_app_${formatdate("YYYY_MM_DD", timestamp())}"
+  ami_name        = "csye6225_fall24_app_${formatdate("YYYY_MM_DD", timestamp())}"
   ami_description = "AMI for CSYE-6225 A04"
   ami_regions = [
     "us-east-1",
@@ -59,45 +90,43 @@ build {
     "source.amazon-ebs.my-ami",
   ]
 
+
+  provisioner "shell" {
+    environment_vars = ["DATABASE=${var.database}",
+      "DB_USERNAME=${var.db_username}",
+      "DB_PASSWORD=${var.db_password}",
+    ]
+
+    scripts = [
+      "./nodeInstaller.sh",
+      "./envSetup.sh",
+      "./databaseSetup.sh",
+
+    ]
+  }
+
   provisioner "file" {
     source      = "webapp.zip"
-    destination = "/tmp/webapp.zip"
+    destination = "/tmp/"
   }
 
   provisioner "file" {
-    source      = "nodeInstaller.sh"
-    destination = "/tmp/nodeinstaller.sh"
-  }
-
-  provisioner "file" {
-    source      = "userAndGroup.sh"
-    destination = "/tmp/userAndGroup.sh"
-  }
-
-  provisioner "file" {
-    source      = "nodeApp.sh"
-    destination = "/tmp/nodeApp.sh"
-  }
-
-  provisioner "file" {
-    source      = "databaseSetup.sh"
-    destination = "/tmp/databaseSetup.sh"
+    source      = "nodeApp.service"
+    destination = "/tmp/nodeApp.service"
   }
 
   provisioner "shell" {
-    script = "nodeInstaller.sh"
-  }
+    environment_vars = ["DATABASE=${var.database}",
+      "DB_USERNAME=${var.db_username}",
+      "DB_PASSWORD=${var.db_password}",
+      "PORT= ${var.port}",
+      "HOST=${var.host}",
+    "DB_DIALECT=${var.db_dialect}"]
 
-  provisioner "shell" {
-    script = "databaseSetup.sh"
-  }
-
-  provisioner "shell" {
-    script = "userAndGroup.sh"
-  }
-
-  provisioner "shell" {
-    script = "nodeApp.sh"
+    scripts = [
+      "./userAndGroup.sh",
+      "./nodeApp.sh"
+    ]
   }
 
 

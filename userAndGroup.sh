@@ -14,7 +14,7 @@ sudo useradd -g csye6225 -s /usr/sbin/nologin -d /opt/csye6225 -m csye6225
 
 # Copy application artifact to /opt directory
 # Replace "/tmp/webapp.zip" with the actual path to your application artifact
-sudo cp /tmp/webapp.zip /opt
+sudo cp /tmp/webapp.zip /opt/webapp.zip
 
 # Unzip application to /opt directory
 sudo unzip /opt/webapp.zip -d /opt/csye6225
@@ -28,9 +28,33 @@ sudo -u csye6225 bash <<'EOF'
 
 # Commands to be executed as csye6225 user
 # Navigate to the application directory
-cd /opt/csye6225
+cd /opt/csye6225 || exit
 
-# Create an .env file if needed
-touch .env
+# Create .env file and write environment variables into it
+env_values=$(cat <<END
+PORT=$PORT
+DATABASE=$DATABASE
+DB_USERNAME=$DB_USERNAME
+DB_PASSWORD=$DB_PASSWORD
+HOST=$HOST
+DB_DIALECT=$DB_DIALECT
+END
+)
+
+# Write environment variables to .env file
+echo "$env_values" > .env
+
+# Change ownership of the .env file to csye6225
+sudo chown csye6225:csye6225 .env
+
+# Print a message indicating the .env file creation
+echo ".env file created"
+
+# Install npm packages for the application
+sudo npm install
+
+# Print a message indicating successful npm installation
+echo "NPM packages installed successfully."
+
 
 EOF
