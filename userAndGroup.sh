@@ -41,6 +41,14 @@ DB_USERNAME=$DB_USERNAME
 DB_PASSWORD=$DB_PASSWORD
 HOST=$HOST
 DB_DIALECT=$DB_DIALECT
+
+# Echo environment variables for debugging in USer setup
+echo "DATABASE is: $DATABASE"
+echo "DB_USERNAME is: $DB_USERNAME"
+echo "DB_PASSWORD is: $DB_PASSWORD"
+echo "PORT is: $PORT"
+echo "HOST is: $HOST"
+echo "DB_DIALECT is: $DB_DIALECT"
 END
 )
 
