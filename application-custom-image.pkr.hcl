@@ -64,7 +64,7 @@ variable "subnet_id" {
 
 source "amazon-ebs" "my-ami" {
   region          = "${var.aws_region}"
-  ami_name        = "csye6225_fall24_app_${formatdate("YYYY_MM_DD", timestamp())}"
+  ami_name        = "csye6225_fall24_app_2024_10_17_{{timestamp}}"
   ami_description = "AMI for CSYE-6225 A04"
   ami_regions = [
     "us-east-1",
