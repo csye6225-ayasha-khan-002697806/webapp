@@ -105,14 +105,17 @@ build {
       "echo 'DATABASE is: $DATABASE'",
       "echo 'DB_USERNAME is: $DB_USERNAME'",
       "echo 'DB_PASSWORD is: $DB_PASSWORD'",
+      "bash ./nodeInstaller.sh",
+      "bash ./envSetup.sh",
+      "bash ./databaseSetup.sh",
     ]
 
-    scripts = [
-      "./nodeInstaller.sh",
-      "./envSetup.sh",
-      "./databaseSetup.sh",
+    // scripts = [
+    //   "./nodeInstaller.sh",
+    //   "./envSetup.sh",
+    //   "./databaseSetup.sh",
 
-    ]
+    // ]
   }
 
   provisioner "file" {
@@ -142,12 +145,14 @@ build {
       "echo 'HOST is: $HOST'",
       "echo 'DB_DIALECT is: $DB_DIALECT'",
       # Additional commands...
+      "bash ./userAndGroup.sh",
+      "bash ./nodeApp.sh",
     ]
 
-    scripts = [
-      "./userAndGroup.sh",
-      "./nodeApp.sh"
-    ]
+    // scripts = [
+    //   "./userAndGroup.sh",
+    //   "./nodeApp.sh"
+    // ]
   }
 
 
