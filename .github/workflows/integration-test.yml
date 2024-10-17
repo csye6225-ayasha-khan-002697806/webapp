@@ -40,10 +40,12 @@ jobs:
       - name: Set up PostgreSQL
         run: |
           sudo service postgresql start
+          sudo -u postgres psql -c "DROP DATABASE IF EXISTS ${{ secrets.DATABASE }};"
           sudo -u postgres psql -c "CREATE USER ${{ secrets.DB_USERNAME }} WITH PASSWORD '${{ secrets.DB_PASSWORD }}';"
           sudo -u postgres psql -c "CREATE DATABASE ${{ secrets.DATABASE }};"
           sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE ${{ secrets.DATABASE }} TO ${{ secrets.DB_USERNAME }};"
           sudo -u postgres psql -c "ALTER DATABASE ${{ secrets.DATABASE }} OWNER TO ${{ secrets.DB_USERNAME }};"
+          
         
         
       # Step 6: Run the tests
