@@ -52,4 +52,20 @@ jobs:
       - name: Init and Build Custom Image
         run: |
           packer init application-custom-image.pkr.hcl
-      #     packer build application-custom-image.pkr.hcl
+          packer build application-custom-image.pkr.hcl
+
+      # Step 7: Share the AMI with DEMO Account
+      # - name: Share AMI with DEMO Account
+      #   run: |
+      #     AMI_ID=$(aws ec2 describe-images \
+      #         --filters "Name=name,Values=${{ env.AMI_NAME }}" \
+      #         --query 'Images[*].ImageId' --output text)
+
+      #     if [ -n "$AMI_ID" ]; then
+      #       echo "Sharing AMI $AMI_ID with DEMO account..."
+      #       aws ec2 modify-image-attribute --image-id "$AMI_ID" \
+      #         --launch-permission "{\"Add\": [{\"UserId\": \"${{ env.DEMO_ACCOUNT_ID }}\"}]}"
+      #     else
+      #       echo "AMI not found, exiting."
+      #       exit 1
+      #     fi
