@@ -52,9 +52,11 @@ sudo chown csye6225:csye6225 .env
 
 # Print a message indicating the .env file creation
 echo ".env file created"
+cat .env
 
 # Install npm packages for the application
-sudo npm install
+npm install
+npm i
 
 # Print a message indicating successful npm installation
 echo "NPM packages installed successfully."
