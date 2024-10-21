@@ -146,6 +146,7 @@ GRANT ALL PRIVILEGES ON DATABASE csye6225_ayasha_khan_002697806 TO myapp_user;
 * \d— relations in this user
 
 
+Demo Assignment 04
 ## Author
 
 Ayasha Khan
