@@ -112,8 +112,8 @@ build {
 
     scripts = [
       "./nodeInstaller.sh",
-      "./envSetup.sh",
-      "./databaseSetup.sh",
+      // "./envSetup.sh",
+      // "./databaseSetup.sh",
 
     ]
   }
