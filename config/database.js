@@ -18,15 +18,17 @@ dotenv.config({
 });
 
 const db = new Sequelize(process.env.DATABASE, process.env.DB_USERNAME, process.env.DB_PASSWORD, {
-    host: process.env.HOST,
+    host: process.env.DB_HOST,
     dialect: process.env.DB_DIALECT,
     logging: false
 });
 
 
+
 const connectingDB = async() => {
     try{
         await db.authenticate();
+        console.log(`database is running with host :${process.env.DB_HOST} `)
         console.log('Database CONNECTED...');
 
         await db.sync();

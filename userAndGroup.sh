@@ -75,9 +75,9 @@ cd /opt/csye6225 || exit
 # Create the .env file with environment variables
 env_values=$(cat <<END
 PORT=$PORT
-DATABASE=$DATABASE
-DB_USERNAME=$DB_USERNAME
-DB_PASSWORD=$DB_PASSWORD
+# DATABASE=$DATABASE
+# DB_USERNAME=$DB_USERNAME
+# DB_PASSWORD=$DB_PASSWORD
 HOST=$HOST
 DB_DIALECT=$DB_DIALECT
 END
@@ -90,9 +90,9 @@ echo "$env_values" | sudo -u csye6225 tee /opt/csye6225/.env >/dev/null
 sudo chown csye6225:csye6225 /opt/csye6225/.env
 
 # Echo environment variables for debugging in User setup
-echo "DATABASE is: $DATABASE"
-echo "DB_USERNAME is: $DB_USERNAME"
-echo "DB_PASSWORD is: $DB_PASSWORD"
+# echo "DATABASE is: $DATABASE"
+# echo "DB_USERNAME is: $DB_USERNAME"
+# echo "DB_PASSWORD is: $DB_PASSWORD"
 echo "PORT is: $PORT"
 echo "HOST is: $HOST"
 echo "DB_DIALECT is: $DB_DIALECT"
