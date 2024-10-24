@@ -101,15 +101,6 @@ build {
       "DB_PASSWORD=${var.db_password}",
     ]
 
-    // inline = [
-    //   "echo 'DATABASE is: $DATABASE'",
-    //   "echo 'DB_USERNAME is: $DB_USERNAME'",
-    //   "echo 'DB_PASSWORD is: $DB_PASSWORD'",
-    //   "bash ./nodeInstaller.sh",
-    //   "bash ./envSetup.sh",
-    //   "bash ./databaseSetup.sh",
-    // ]
-
     scripts = [
       "./nodeInstaller.sh",
       // "./envSetup.sh",
@@ -135,19 +126,6 @@ build {
       "PORT=${var.port}",
       "HOST=${var.host}",
     "DB_DIALECT=${var.db_dialect}"]
-
-    // inline = [
-    //   "echo 'in packer template'",
-    //   "echo 'DATABASE is: $DATABASE'",
-    //   "echo 'DB_USERNAME is: $DB_USERNAME'",
-    //   "echo 'DB_PASSWORD is: $DB_PASSWORD'",
-    //   "echo 'PORT is: $PORT'",
-    //   "echo 'HOST is: $HOST'",
-    //   "echo 'DB_DIALECT is: $DB_DIALECT'",
-    //   # Additional commands...
-    //   "bash ./userAndGroup.sh",
-    //   "bash ./nodeApp.sh",
-    // ]
 
     scripts = [
       "./userAndGroup.sh",
