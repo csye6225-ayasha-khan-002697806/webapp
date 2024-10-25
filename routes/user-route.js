@@ -10,9 +10,9 @@ route.head("/self", userController.invalidURL);
 route.get("/self", checkAuthenticatedUser, userController.getUser);
 route.put("/self", checkAuthenticatedUser, userController.updateUser);
 route.post("/", userController.createUser);
-route.all("*", userController.invalidURL);
+route.all("/self", userController.invalidURL);
 
-route.all("/self/*", userController.invalidURL);
+// route.all("/self/*", userController.invalidURL);
 
 
 
