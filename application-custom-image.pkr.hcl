@@ -142,7 +142,7 @@ build {
     scripts = [
       "./userAndGroup.sh",
       "./nodeApp.sh",
-      #"./cloudwatch-install.sh",
+      "./cloudwatch-install.sh",
     ]
   }
 
