@@ -125,6 +125,11 @@ build {
     destination = "/tmp/nodeApp.service"
   }
 
+  provisioner "file" {
+    source      = "cloudwatch-config.json"
+    destination = "/tmp/cloudwatch-config.json"
+  }
+
   provisioner "shell" {
     environment_vars = ["DATABASE=${var.database}",
       "DB_USERNAME=${var.db_username}",
@@ -136,7 +141,8 @@ build {
 
     scripts = [
       "./userAndGroup.sh",
-      "./nodeApp.sh"
+      "./nodeApp.sh",
+      "./cloudwatch-install.sh",
     ]
   }
 
