@@ -7,9 +7,9 @@ const route = express.Router();
 route.head("/", imageController.invalidURL);
 // route.head("/", imageController.invalidURL);
 
-// route.get("/", imageController.getImageById );
+route.get("/", imageController.getImageById );
 // route.delete("/self/pic", checkAuthenticatedUser);
-route.post("/", imageController.addImage);
+// route.post("/", imageController.addImage);
 route.all("*", imageController.invalidURL);
 route.all("/*", imageController.invalidURL);
 

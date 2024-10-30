@@ -3,6 +3,8 @@ import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import path from 'path';
+import { lookup } from 'dns';
+import logger from '../services/logger.js';
 
 // Load environment variables from .env file
 dotenv.config();
@@ -31,11 +33,15 @@ const connectingDB = async() => {
         await db.authenticate();
         console.log(`database is running with host :${process.env.DB_HOST} `)
         console.log('Database CONNECTED...');
+        logger.info(`database is running with host :${process.env.DB_HOST} `);
+        logger.info("Database CONNECTED...");
 
         await db.sync();
         console.log('Database SYNCHRONIZATION SUCCESS...');
+        logger.info("Database SYNCHRONIZATION SUCCESS...");
     }catch(error){
         console.log('Database NOT CONNECTED: ', error);
+        logger.error('Database NOT CONNECTED: ', error);
         throw error; 
     }
 };
