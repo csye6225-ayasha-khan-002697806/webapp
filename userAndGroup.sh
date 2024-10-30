@@ -34,6 +34,7 @@ env_values=$(cat <<END
 PORT=$PORT
 HOST=$HOST
 DB_DIALECT=$DB_DIALECT
+NODE_ENV=$NODE_ENV
 END
 )
 
@@ -47,6 +48,7 @@ sudo chown csye6225:csye6225 /opt/csye6225/.env
 echo "PORT is: $PORT"
 echo "HOST is: $HOST"
 echo "DB_DIALECT is: $DB_DIALECT"
+echo "NODE_ENV is: $NODE_ENV"
 
 # Print a message indicating the .env file creation
 echo ".env file created"
