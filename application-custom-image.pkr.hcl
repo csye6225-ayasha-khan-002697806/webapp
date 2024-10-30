@@ -22,6 +22,11 @@ variable "db_password" {
   default = env("DB_PASSWORD")
 }
 
+variable "node_env" {
+  type    = string
+  default = env("NODE_ENV")
+}
+
 variable "port" {
   type    = number
   default = env("PORT")
@@ -99,6 +104,7 @@ build {
     environment_vars = ["DATABASE=${var.database}",
       "DB_USERNAME=${var.db_username}",
       "DB_PASSWORD=${var.db_password}",
+      "NODE_ENV=${var.node_env}"
     ]
 
     scripts = [
@@ -125,6 +131,7 @@ build {
       "DB_PASSWORD=${var.db_password}",
       "PORT=${var.port}",
       "HOST=${var.host}",
+      "NODE_ENV=${var.node_env}",
     "DB_DIALECT=${var.db_dialect}"]
 
     scripts = [
