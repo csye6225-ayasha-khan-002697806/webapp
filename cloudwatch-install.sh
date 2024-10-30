@@ -13,6 +13,7 @@ sudo cp /tmp/cloudwatch-config.json /opt/csye6225/cloudwatch-config.json
 sudo chmod 775 /opt/csye6225/cloudwatch-config.json
 cd /opt/csye6225/ && sudo chown csye6225:csye6225 cloudwatch-config.json
 
+echo "changed ownership of cloudwatch-config.json"
 
 sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl \
     -a fetch-config \
