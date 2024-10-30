@@ -13,7 +13,7 @@ const logger = winston.createLogger({
   level: "debug",
   format: winston.format.combine(winston.format.timestamp(), logFormat),
   transports: [
-    new winston.transports.File({ filename: '/Users/ayashakhan/Desktop/Courses/Cloud/src/khanayas/app.log' }),
+    new winston.transports.File({ filename: '/var/log/webapp/app.log' }),
     new winston.transports.Console(),
   ],
 });
