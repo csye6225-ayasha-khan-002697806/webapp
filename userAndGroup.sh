@@ -60,7 +60,7 @@ cd /var/log/webapp || exit
 
 sudo touch /var/log/webapp/app.log
 
-sudo chown csye6225:csye6225 webapp -R 
+sudo chown csye6225:csye6225 /var/log/webapp -R 
 
 echo "log file directory created"
 
