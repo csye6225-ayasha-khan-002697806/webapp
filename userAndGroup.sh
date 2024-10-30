@@ -54,6 +54,15 @@ echo "NODE_ENV is: $NODE_ENV"
 echo ".env file created"
 sudo cat /opt/csye6225/.env
 
+sudo mkdir -p /var/log/webapp
+
+cd /var/log/webapp || exit
+
+sudo touch /var/log/webapp/app.log
+
+sudo chown csye6225:csye6225 webapp -R 
+
+echo "log file directory created"
 
 # Install npm packages for the application as the csye6225 user
 sudo -u csye6225 npm install --prefix /opt/csye6225 || exit 1
