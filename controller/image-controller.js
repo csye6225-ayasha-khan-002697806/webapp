@@ -3,6 +3,7 @@ import { connectingDB } from '../config/database.js';
 import logger from '../services/logger.js';
 import { s3Upload, s3Delete } from '../services/s3actions-service.js'; // create an S3 service for upload/delete
 import * as userService from '../services/user-service.js';
+import { statsdClient } from '../services/statD.js'
 
 const invalidURL = async (req, res) => {
     logger.error({
@@ -37,6 +38,8 @@ const deleteImage = async(req, res) => {
 
 const addImageHandler = async (req, res) => {
 
+    statsdClient.increment('api.add_image_api_count.count');
+    const startAddImage = Date.now();
     try {
         await connectingDB();
         const email = req.username;
@@ -51,11 +54,18 @@ const addImageHandler = async (req, res) => {
         } else {
             res.status(400).json({ error: error.message });
         }
+    }finally {
+        // Calculate duration and send to StatsD
+        const duration = Date.now() - startAddImage;
+        statsdClient.timing('api.add_image_api_timimg.duration', duration);
     }
 };
 
 
 const getProfilePic = async (req, res) => {
+
+    statsdClient.increment('api.get_image_api_count.count');
+    const startGetImage = Date.now();
     const email = req.username;
 
     try {
@@ -82,11 +92,18 @@ const getProfilePic = async (req, res) => {
             return res.status(404).json({ error: error.message });
         }
         return res.status(500).json({ error: 'Internal Server Error' });
+    }finally {
+        // Calculate duration and send to StatsD
+        const duration = Date.now() - startGetImage;
+        statsdClient.timing('api.get_image_api_timimg.duration', duration);
     }
 };
 
 
 const deleteProfilePic = async (req, res) => {
+
+    statsdClient.increment('api.delete_image_api_count.count');
+    const startDeleteImage = Date.now();
     const email = req.username;
 
     try {
@@ -105,6 +122,10 @@ const deleteProfilePic = async (req, res) => {
             return res.status(404).json({ error: error.message });
         }
         return res.status(500).json({ error: 'Internal Server Error' });
+    }finally {
+        // Calculate duration and send to StatsD
+        const duration = Date.now() - startDeleteImage;
+        statsdClient.timing('api.delete_image_api_timimg.duration', duration);
     }
 };
 

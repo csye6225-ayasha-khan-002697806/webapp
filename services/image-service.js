@@ -1,6 +1,7 @@
 // services/ImageService.js
 import Image from '../model/image.js';
 import { s3Upload, s3Delete } from './s3actions-service.js';
+import { statsdClient } from '../services/statD.js'
 
 export const addImage = async (user, file) => {
     // Step 1: Check if the user exists
@@ -25,6 +26,7 @@ export const addImage = async (user, file) => {
 
     console.log("file upload done");
     // Step 4: Save image metadata in the database
+    const startCreateImage = Date.now();
     const image = await Image.create({
         fileName: file.originalname,
         url,
@@ -32,6 +34,8 @@ export const addImage = async (user, file) => {
         uploadDate: new Date(),
     });
 
+    const duration = Date.now() - startCreateImage;
+    statsdClient.timing('db.query.create_image_data_query.duration', duration);
     return image;
 };
 
@@ -46,7 +50,12 @@ export const getImageById = async (user) => {
 
     const userId = user.id;
 
+    const startGetImage = Date.now();
     const image = await Image.findOne({ where: { userId } });
+
+    const duration = Date.now() - startGetImage;
+    statsdClient.timing('db.query.get_image_query.duration', duration);
+
     if (!image) {
         throw new Error('Image not found');
     }
@@ -63,10 +72,12 @@ export const deleteImageByUserId = async (user) => {
 
     const userId = user.id;
 
+    const startDeleteImage = Date.now();
     const image = await Image.findOne({ where: { userId } });
     if (!image) {
         throw new Error('Image not found');
     }
+
 
     // Delete the image from S3
     console.log("file name in DB ", image.fileName)
@@ -78,5 +89,7 @@ export const deleteImageByUserId = async (user) => {
     // Delete the image from the database
     await image.destroy();
 
+    const duration = Date.now() - startDeleteImage;
+    statsdClient.timing('db.query.delete_image_query.duration', duration);
     return image; // Optional: Return the deleted image or any confirmation info
 };
