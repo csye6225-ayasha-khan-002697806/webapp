@@ -1,8 +1,11 @@
 import * as userService from '../services/user-service.js';
 import { connectingDB } from '../config/database.js';
 import logger from '../services/logger.js';
+import { statsdClient } from '../services/statD.js'
 
 const getUser = async (req, res) => {
+  statsdClient.increment('api.get_user.count');
+  const startGet = Date.now();
     try {
         await connectingDB();
     
@@ -58,12 +61,18 @@ const getUser = async (req, res) => {
             }
         })
         return res.status(503).end();
-    }
+    }finally {
+      // Calculate duration and send to StatsD
+      const duration = Date.now() - startGet;
+      statsdClient.timing('api.get_user_api_timimg.duration', duration);
+  }
 
 }
 
 const updateUser = async (req, res) => {
 
+    statsdClient.increment('api.update_user.count');
+    const startPut = Date.now();
     try{
         await connectingDB();
         const email = req.username;
@@ -153,12 +162,18 @@ const updateUser = async (req, res) => {
             }
         })
         return res.status(503).end();
-    }
+    }finally {
+      // Calculate duration and send to StatsD
+      const duration = Date.now() - startPut;
+      statsdClient.timing('api.update_user_api_timimg.duration', duration);
+  }
 }
 
 
 const createUser = async (req, res) => {
 
+    statsdClient.increment('api.create_user_api.count');
+    const startPost = Date.now();
     try{
         await connectingDB();
         res.header('cache-control', 'no-cache');
@@ -250,10 +265,16 @@ const createUser = async (req, res) => {
             }
         })
         return res.status(503).end();
+    }finally {
+      // Calculate duration and send to StatsD
+      const duration = Date.now() - startPost;
+      statsdClient.timing('api.create_user_api_timimg.duration', duration);
     }
+    
 }
 
 const invalidURL = async (req, res) => {
+    statsdClient.increment('api.invalid_endpoint.count');
     logger.error({
         message: "Invalid API endpoint", 
         httpRequest: {
