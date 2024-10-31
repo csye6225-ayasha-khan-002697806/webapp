@@ -4,6 +4,7 @@ import { statsdClient } from '../services/statD.js'
 
 const checkServerHealth = async (req, res) => {
     statsdClient.increment('api.check_server_health.count');
+    const start = Date.now();
     try{
         res.header('cache-control', 'no-cache, no-store, must-revalidate');
         res.set('Pragma', 'no-cache');
@@ -66,6 +67,10 @@ const checkServerHealth = async (req, res) => {
             }
         })
         return res.status(500).send();
+    }finally {
+        // Calculate duration and send to StatsD
+        const duration = Date.now() - start;
+        statsdClient.timing('api.check_server_health.duration', duration);
     }
 };
 
