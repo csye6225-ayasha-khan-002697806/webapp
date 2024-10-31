@@ -168,7 +168,18 @@ const getProfilePic = async (req, res) => {
         const user = await userService.searchUserToUpdate(email);
 
         const image = await imageService.getImageById(user);
-
+        console.log("image get by service", image);
+        if(image === null){
+            logger.error({
+                message: `Image not found for this user`, 
+                httpRequest: {
+                  requestMethod: req.method,
+                  requestUrl: req.originalUrl,
+                  status: 404, 
+                }
+            })
+            return res.status(404).json({ error: 'Image not found for this user' });
+        }
         // Prepare the response
         const response = {
             file_name: image.fileName,
