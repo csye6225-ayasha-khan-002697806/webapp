@@ -15,6 +15,12 @@ app.use('/healthz', healthzRoute);
 app.use('/v1/user', userRoute);
 app.use('/v1/user/self/pic', imageRoute);
 
+app.get("/" ,  (req,res)=>{
+    res.json({
+        message: "welcome to my application"
+    })
+});
+
 app.all('*',(req, res) =>{
     logger.warn("API end point not allowed ", req.method);
     res.status(404).send();
