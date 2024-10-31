@@ -2,6 +2,7 @@ import { Sequelize, DataTypes } from 'sequelize';
 import {db} from "../config/database.js" 
 import bcrypt from 'bcrypt';
 import logger from '../services/logger.js';
+import Image from './image.js'
 
 const User = db.define('User', {
   id:{
@@ -54,14 +55,20 @@ const User = db.define('User', {
   }
 });
 
-User.sync()
-.then(() => {
-  console.log('User table created successfully.');
-  logger.info("User table created successfully.");
-})
-.catch((error) => {
-  console.error('Error creating User table:', error);
-  logger.error("Error creating User table:",error);
+// Define associations
+User.hasOne(Image, {
+  foreignKey: 'userId',
+  as: 'image' // This is the alias for the association
 });
+
+// User.sync()
+// .then(() => {
+//   console.log('User table created successfully.');
+//   logger.info("User table created successfully.");
+// })
+// .catch((error) => {
+//   console.error('Error creating User table:', error);
+//   logger.error("Error creating User table:",error);
+// });
 
 export default User;
