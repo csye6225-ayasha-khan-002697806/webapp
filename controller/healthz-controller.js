@@ -1,7 +1,9 @@
 import { connectingDB } from '../config/database.js';
 import logger from '../services/logger.js';
+import { statsdClient } from '../services/statD.js'
 
 const checkServerHealth = async (req, res) => {
+    statsdClient.increment('api.check_server_health.count');
     try{
         res.header('cache-control', 'no-cache, no-store, must-revalidate');
         res.set('Pragma', 'no-cache');
