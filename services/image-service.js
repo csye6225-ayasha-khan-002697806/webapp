@@ -56,9 +56,6 @@ export const getImageById = async (user) => {
     const duration = Date.now() - startGetImage;
     statsdClient.timing('db.query.get_image_query.duration', duration);
 
-    if (!image) {
-        throw new Error('Image not found');
-    }
     return image;
 };
 
