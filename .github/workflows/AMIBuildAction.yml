@@ -82,3 +82,79 @@ jobs:
         with:
           name: ami_id
           path: ami_id.txt
+
+
+  autoscaling_refresh:
+      needs: if_pull_request_merge  # Changed from 'packer_build_ami' to 'if_pull_request_merge'
+      runs-on: ubuntu-latest
+      name: Auto Scaling Group Launch Template & Instance Refresh
+
+      env:
+        AWS_REGION: ${{ secrets.AWS_REGION }}
+        DEPLOY_ENVIRONMENT: ${{ secrets.DEPLOY_ENVIRONMENT }}
+        LAUNCH_TEMPLATE_ID: ${{ secrets.LAUNCH_TEMPLATE_ID }}
+        AUTO_SCALING_GROUP_NAME: ${{ secrets.AUTO_SCALING_GROUP_NAME }}  # Now using a secret
+
+
+      steps:
+        # Step 1: Configure AWS Credentials Dynamically Based on Environment
+        - name: Configure AWS Credentials for Dev
+          if: ${{ env.DEPLOY_ENVIRONMENT == 'dev' }}
+          uses: aws-actions/configure-aws-credentials@v1
+          with:
+            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws-region: ${{ env.AWS_REGION }}
+
+        - name: Configure AWS Credentials for Prod
+          if: ${{ env.DEPLOY_ENVIRONMENT == 'prod' }}
+          uses: aws-actions/configure-aws-credentials@v1
+          with:
+            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
+            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }}
+            aws-region: ${{ env.AWS_REGION }}
+
+        # Step 2: Create a New Launch Template Version with Latest AMI ID
+        - name: Create New Launch Template Version
+          id: create_lt_version
+          run: |
+            AMI_ID=${{ needs.if_pull_request_merge.outputs.ami_id }}  # Use output from the 'if_pull_request_merge' job
+            echo "Creating new Launch Template version with AMI ID: $AMI_ID"
+            aws ec2 create-launch-template-version \
+                --launch-template-id ${{ env.LAUNCH_TEMPLATE_ID }} \
+                --source-version 1 \
+                --launch-template-data "{\"ImageId\":\"$AMI_ID\"}" \
+                --no-cli-pager
+
+        # Step 3: Start Instance Refresh for Auto Scaling Group
+        - name: Start Instance Refresh
+          id: start_refresh
+          run: |
+            REFRESH_ID=$(aws autoscaling start-instance-refresh \
+                --auto-scaling-group-name ${{ env.AUTO_SCALING_GROUP_NAME }} \
+                --query "InstanceRefreshId" \
+                --output text \
+                --no-cli-pager)
+            echo "Instance Refresh started with ID: $REFRESH_ID"
+            echo "instance_refresh_id=$REFRESH_ID" >> $GITHUB_ENV
+
+        # Step 4: Wait for Instance Refresh to Complete
+        - name: Wait for Instance Refresh Completion
+          run: |
+            echo "Waiting for instance refresh to complete..."
+            while true; do
+              STATUS=$(aws autoscaling describe-instance-refreshes \
+                  --auto-scaling-group-name ${{ env.AUTO_SCALING_GROUP_NAME }} \
+                  --query "InstanceRefreshes[?InstanceRefreshId=='${{ env.instance_refresh_id }}'].Status" \
+                  --output text \
+                  --no-cli-pager)
+              echo "Current status: $STATUS"
+              if [[ "$STATUS" == "Successful" ]]; then
+                echo "Instance Refresh completed successfully."
+                break
+              elif [[ "$STATUS" == "Failed" || "$STATUS" == "Cancelled" ]]; then
+                echo "Instance Refresh failed or was cancelled. Exiting."
+                exit 1
+              fi
+              sleep 30
+            done
