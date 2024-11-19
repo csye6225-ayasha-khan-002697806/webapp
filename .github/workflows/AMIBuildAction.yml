@@ -97,6 +97,17 @@ jobs:
 
 
       steps:
+        - name: Download AMI_ID Artifact
+          uses: actions/download-artifact@v3
+          with:
+            name: ami_id
+
+        - name: Read AMI_ID
+          id: read_ami_id
+          run: |
+            AMI_ID=$(cat ami_id.txt)
+            echo "AMI_ID: $AMI_ID"
+            echo "ami_id=$AMI_ID" >> $GITHUB_ENV
         # Step 1: Configure AWS Credentials Dynamically Based on Environment
         - name: Configure AWS Credentials for Dev
           if: ${{ env.DEPLOY_ENVIRONMENT == 'dev' }}
@@ -118,7 +129,7 @@ jobs:
         - name: Create New Launch Template Version
           id: create_lt_version
           run: |
-            AMI_ID=${{ needs.if_pull_request_merge.outputs.ami_id }}  # Use output from the 'if_pull_request_merge' job
+            AMI_ID=${{ env.ami_id }}  # Use output from the 'if_pull_request_merge' job
             echo "Creating new Launch Template version with AMI ID: $AMI_ID"
             aws ec2 create-launch-template-version \
                 --launch-template-id ${{ env.LAUNCH_TEMPLATE_ID }} \
