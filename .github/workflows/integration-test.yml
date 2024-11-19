@@ -59,4 +59,5 @@ jobs:
           DATABASE: ${{ secrets.DATABASE }}
           PORT: ${{ secrets.PORT }}
           DB_DIALECT: ${{ secrets.DB_DIALECT }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
         run: npm test
