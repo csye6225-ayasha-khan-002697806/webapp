@@ -1,7 +1,33 @@
 import * as userService from '../services/user-service.js';
 import { connectingDB } from '../config/database.js';
 import logger from '../services/logger.js';
-import { statsdClient } from '../services/statD.js'
+import { statsdClient } from '../services/statD.js';
+import jwt from 'jsonwebtoken';
+import { SNSClient, PublishCommand } from '@aws-sdk/client-sns';
+import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import path from 'path';
+
+// Load environment variables from .env file
+dotenv.config();
+
+// Get current file path and directory
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Load .env from parent directory if needed
+dotenv.config({
+  override: true,
+  path: path.join(__dirname, '../.env')
+});
+
+
+// // SNS client initialization
+// const sns = new AWS.SNS({ region: process.env.AWS_REGION });
+
+// Example of using the SNS client
+const snsClient = new SNSClient({ region: process.env.AWS_REGION });
 
 const getUser = async (req, res) => {
   statsdClient.increment('api.get_user.count');
@@ -28,6 +54,17 @@ const getUser = async (req, res) => {
         else{
             const user = await userService.findUserForGet(email)
             if(user){
+                if(user.verified === false){
+                  logger.info({
+                    message: "User is not verified", 
+                    httpRequest: {
+                      requestMethod: req.method,
+                      requestUrl: req.originalUrl,
+                      status: 403, 
+                    }
+                  })
+                  return res.status(403).json({ message: "User not verified. Please verify your account." });
+                }
                 logger.info({
                     message: "User data fetched successfully", 
                     httpRequest: {
@@ -124,7 +161,19 @@ const updateUser = async (req, res) => {
         else{
             try {
                 const user = await userService.searchUserToUpdate(email)
-                
+                console.log(user.verified);
+                if(user.verified === false){
+                  logger.info({
+                    message: "User is not verified", 
+                    httpRequest: {
+                      requestMethod: req.method,
+                      requestUrl: req.originalUrl,
+                      status: 403, 
+                    }
+                  })
+                  return res.status(403).json({ message: "User not verified. Please verify your account." });
+                }
+
                 user.set({...user.dataValues, ...req.body})
         
                 await user.save();
@@ -178,7 +227,9 @@ const createUser = async (req, res) => {
         await connectingDB();
         res.header('cache-control', 'no-cache');
     
-        const email = req.body.email
+        // const email = req.body.email
+        const { email, first_name, last_name, password } = req.body;
+
         const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
         if (!emailRegex.test(email)) {
             logger.error({
@@ -228,7 +279,39 @@ const createUser = async (req, res) => {
                 }
                 else{
                     try{
-                        const user = await userService.addUser(req.body);
+
+                        // Generate JWT token and expiry
+                        const token = jwt.sign({email}, process.env.JWT_SECRET, { expiresIn: '2m' });
+                        const tokenExpiry = new Date(Date.now() + 2 * 60 * 1000);
+
+                        
+                        // const user = await userService.addUser(req.body);
+                        // Create user and save the token
+                        const user = await userService.addUser({
+                          first_name,
+                          last_name,
+                          email,
+                          password,
+                          verificationToken: token,
+                          tokenExpiry,
+                          verified: false
+                        });
+                        
+                        // Publish to SNS
+                        const message = JSON.stringify({
+                          email: user.email,
+                          first_name: user.first_name,
+                          last_name: user.last_name,
+                          token
+                        });
+
+                        const params = { TopicArn: process.env.SNS_TOPIC_ARN, Message: message };
+
+                        // Create PublishCommand and send it with snsClient.send()
+                        const publishCommand = new PublishCommand(params);
+                        await snsClient.send(publishCommand);  // This is the corrected usage
+
+                        // logger.info('User created successfully and SNS message published.');
                         logger.info({
                             message: "User created successfully", 
                             httpRequest: {
@@ -286,4 +369,53 @@ const invalidURL = async (req, res) => {
     return res.status(405).end();
 }
 
-export {getUser, updateUser, createUser, invalidURL};
+const verifyUser = async (req, res) => {
+  const { user, token } = req.query;
+
+  console.log("inside the verify api", user);
+  
+  try {
+    await connectingDB();
+
+    res.header('cache-control', 'no-cache');
+    // Find the user by email
+    const foundUser = await userService.searchUserToUpdate(user)
+
+    if (!foundUser) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    if(foundUser.verified === true){
+      return res.status(200).json({ message: "No action performed. The user is already verified." });
+
+    }
+    // Check token validity
+    if (foundUser.verificationToken !== token) {
+      return res.status(400).json({ message: 'Invalid or expired token.' });
+    }
+
+    console.log("user token is compared and equal");
+    if (new Date() > new Date(foundUser.tokenExpiry)) {
+      return res.status(400).json({ message: 'Token has expired.' });
+    }
+
+    foundUser.set({
+      verified: true,
+      verificationToken: null,
+      tokenExpiry: null,
+    });
+    
+    await foundUser.save({ fields: ['verified', 'verificationToken', 'tokenExpiry'] });
+    
+    console.log("user data is set with verified flag")
+    // await foundUser.save();
+    console.log("user saved to DB with verified flag")
+    logger.info('User verified successfully.');
+    return res.status(200).json({ message: 'User verified successfully.' });
+  } catch (error) {
+    logger.error('Error during user verification:', error);
+    return res.status(503).end();
+  }
+};
+
+export {getUser, updateUser, createUser, invalidURL, verifyUser};

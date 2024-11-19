@@ -111,6 +111,17 @@ const addImageHandler = async (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
 
+        if(user.verified === false){
+            logger.info({
+              message: "User is not verified", 
+              httpRequest: {
+                requestMethod: req.method,
+                requestUrl: req.originalUrl,
+                status: 403, 
+              }
+            })
+            return res.status(403).json({ message: "User not verified. Please verify your account." });
+        }
         const existingImage = await imageService.getImageById(user);
         if (existingImage) {
             logger.error({
@@ -167,6 +178,17 @@ const getProfilePic = async (req, res) => {
         await connectingDB();
         const user = await userService.searchUserToUpdate(email);
 
+        if(user.verified === false){
+            logger.info({
+              message: "User is not verified", 
+              httpRequest: {
+                requestMethod: req.method,
+                requestUrl: req.originalUrl,
+                status: 403, 
+              }
+            })
+            return res.status(403).json({ message: "User not verified. Please verify your account." });
+        }
         const image = await imageService.getImageById(user);
         console.log("image get by service", image);
         if(image === null){
@@ -216,6 +238,18 @@ const deleteProfilePic = async (req, res) => {
         await connectingDB();
         const user = await userService.searchUserToUpdate(email);
 
+        if(user.verified === false){
+            logger.info({
+              message: "User is not verified", 
+              httpRequest: {
+                requestMethod: req.method,
+                requestUrl: req.originalUrl,
+                status: 403, 
+              }
+            })
+            return res.status(403).json({ message: "User not verified. Please verify your account." });
+        }
+        
         await imageService.deleteImageByUserId(user);
         
         // Return 204 No Content

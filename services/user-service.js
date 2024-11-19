@@ -100,7 +100,7 @@ const addUser = async (payload) => {
     
       const startForAddUser = Date.now();
       const user = await User.create(payload, {
-        attributes: ['uuid', 'first_name', 'last_Name', 'email', 'account_created', 'account_updated'], 
+        attributes: ['uuid', 'first_name', 'last_Name', 'email', 'account_created', 'account_updated', 'verified', 'verificationToken', 'tokenExpiry'], 
       });
       
       const duration = Date.now() - startForAddUser;

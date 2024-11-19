@@ -37,6 +37,7 @@ describe('User Endpoint Integration Tests', () => {
   const testUsername = 'ann2.doe@example.com';
   const testPassword = 'skdjfhskdfjhg';
   const newTestPassword = 'skdjfhskdfjhg';
+  const verified = true;
 
   it('Test 1 - Create an account and get it', async () => {
     try {
@@ -51,6 +52,10 @@ describe('User Endpoint Integration Tests', () => {
       });
 
       console.log("test post : user created");
+
+      const user = await User.findOne({ where: { email: testUsername } });
+      user.verified = true;
+      await user.save();
       const authHeader = encodeBasicAuth(testUsername, testPassword);
       console.log(`username ${testUsername} and testPassword ${testPassword}`);
       console.log(` authHeader: ${authHeader}`);

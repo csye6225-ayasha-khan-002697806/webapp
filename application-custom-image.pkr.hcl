@@ -10,60 +10,67 @@ packer {
 variable "database" {
   type    = string
   default = env("DATABASE")
+  # default = "csye6225"
 }
 
 variable "db_username" {
   type    = string
   default = env("DB_USERNAME")
+  # default = "csye6225"
 }
 
 variable "db_password" {
   type    = string
   default = env("DB_PASSWORD")
+  # default = "Ayasha12!"
 }
 
 variable "node_env" {
   type    = string
   default = env("NODE_ENV")
+  # default = "PROD"
 }
 
 variable "port" {
   type    = number
   default = env("PORT")
+  # default = 3000
 }
 
 variable "host" {
   type    = string
   default = env("HOST")
+  # default = "localhost"
 }
 
 variable "db_dialect" {
   type    = string
   default = env("DB_DIALECT")
+  # default = "postgres"
 }
 
 
 variable "aws_region" {
   type = string
-  // default = "us-east-1"
+  # default = "us-east-1"
   default = env("AWS_REGION")
 }
 
 variable "source_ami" {
   type = string
-  // default = "ami-0866a3c8686eaeeba" # Ubuntu 24.04 LTS us-east-1
+  # default = "ami-0866a3c8686eaeeba" # Ubuntu 24.04 LTS us-east-1
   default = env("SOURCE_AMI")
 }
 
 variable "ssh_username" {
   type = string
-  // default = "ubuntu"
+  # default = "ubuntu"
   default = env("SSH_USERNAME")
 }
 
 variable "subnet_id" {
   type = string
-  // default = "subnet-08b7aaccb1c0bf34b"
+  # default = "subnet-08b7aaccb1c0bf34b"
   default = env("SUBNET_ID")
 }
 
