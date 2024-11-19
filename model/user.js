@@ -35,6 +35,19 @@ const User = db.define('User', {
     type: DataTypes.DATE,
     defaultValue: Sequelize.NOW,
     allowNull: false
+  },
+  verified: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+    allowNull: false
+  },
+  verificationToken: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  tokenExpiry: {
+    type: DataTypes.DATE,
+    allowNull: true
   }
 }, {
   // Ensure timestamps are enabled and map to custom column names
@@ -48,9 +61,11 @@ const User = db.define('User', {
       user.password = hashedPassword;
     },
     beforeUpdate: async (user) => {
-      const salt = 10;
-      const hashedPassword = await bcrypt.hash(user.password, salt);
-      user.password = hashedPassword;
+      if (user.changed('password') && user.password) { // Only hash if password has changed
+        const salt = 10;
+        const hashedPassword = await bcrypt.hash(user.password, salt);
+        user.password = hashedPassword;
+      }
     },
   }
 });
