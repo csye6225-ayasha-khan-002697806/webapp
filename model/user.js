@@ -48,6 +48,10 @@ const User = db.define('User', {
   tokenExpiry: {
     type: DataTypes.DATE,
     allowNull: true
+  },
+  verificationLink: {
+    type: DataTypes.STRING,
+    allowNull: false
   }
 }, {
   // Ensure timestamps are enabled and map to custom column names
