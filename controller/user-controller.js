@@ -284,7 +284,8 @@ const createUser = async (req, res) => {
                         const token = jwt.sign({email}, process.env.JWT_SECRET, { expiresIn: '2m' });
                         const tokenExpiry = new Date(Date.now() + 2 * 60 * 1000);
 
-                        
+                        const verificationLink = `user=${email}&token=${token}`
+                        console.log(verificationLink)
                         // const user = await userService.addUser(req.body);
                         // Create user and save the token
                         const user = await userService.addUser({
@@ -294,7 +295,8 @@ const createUser = async (req, res) => {
                           password,
                           verificationToken: token,
                           tokenExpiry,
-                          verified: false
+                          verified: false,
+                          verificationLink
                         });
                         
                         // Publish to SNS
@@ -378,6 +380,18 @@ const verifyUser = async (req, res) => {
     await connectingDB();
 
     res.header('cache-control', 'no-cache');
+
+    if (req.headers['content-type'] ) {
+      logger.error({
+          message: "Payload not allowed", 
+          httpRequest: {
+            requestMethod: req.method,
+            requestUrl: req.originalUrl,
+            status: 400, 
+          }
+        })
+      return res.status(400).send();
+  }
     // Find the user by email
     const foundUser = await userService.searchUserToUpdate(user)
 
