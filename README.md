@@ -147,8 +147,10 @@ GRANT ALL PRIVILEGES ON DATABASE csye6225_ayasha_khan_002697806 TO myapp_user;
 
 
 Demo Assignment 04
-## Author
-
 Assignment 05
+Assignment 06
+Assignment 07
+Assignment 08
 
+## Author
 Ayasha Khan
